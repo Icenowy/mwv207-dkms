@@ -332,7 +332,7 @@ static int mwv207_bo_move(struct ttm_buffer_object *bo, bool evict,
 		return -EINVAL;
 
 	jdev = ddev_to_jdev(jbo->tbo.base.dev);
-	if (old_mem->mem_type == TTM_PL_SYSTEM && bo->ttm == NULL) {
+	if (!old_mem || (old_mem->mem_type == TTM_PL_SYSTEM && bo->ttm == NULL)) {
 		ttm_bo_move_null(bo, new_mem);
 		goto out;
 	}
