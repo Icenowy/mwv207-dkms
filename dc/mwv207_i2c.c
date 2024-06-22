@@ -253,7 +253,9 @@ struct i2c_adapter *mwv207_i2c_create(struct mwv207_device *jdev, int i2c_chan)
 		return NULL;
 
 	i2c->adapter.owner = THIS_MODULE;
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 8, 0))
 	i2c->adapter.class = I2C_CLASS_DDC;
+#endif
 	i2c->adapter.dev.parent = jdev->dev;
 	i2c_set_adapdata(&i2c->adapter, i2c);
 	i2c->mutex = &jdev->gpio_lock;
