@@ -21,6 +21,7 @@
 #include <linux/fb.h>
 #include <linux/delay.h>
 #include <drm/drm_fb_helper.h>
+#include <drm/drm_fbdev_generic.h>
 #include <drm/drm_aperture.h>
 #include <drm/drm_gem_ttm_helper.h>
 #include <drm/drm_device.h>
@@ -365,6 +366,8 @@ static int mwv207_pci_probe(struct pci_dev *pdev,
 	ret = mwv207_fbdev_init(jdev);
 	if (ret)
 		goto err_drm;
+
+	drm_fbdev_generic_setup(&jdev->base, 32);
 
 	return 0;
 

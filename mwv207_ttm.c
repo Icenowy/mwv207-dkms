@@ -160,11 +160,7 @@ static int mwv207_ttm_job_submit(struct mwv207_job *mjob, struct dma_fence **fen
 {
 	int ret;
 
-	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, NULL);
-	if (ret)
-		return ret;
-
-	*fence = &mjob->base.s_fence->finished;
+	*fence = dma_fence_get(&mjob->base.s_fence->finished);
 
 	mwv207_job_get(mjob);
 	drm_sched_entity_push_job(&mjob->base);
@@ -254,6 +250,7 @@ static int mwv207_move_vram_gtt(struct ttm_buffer_object *bo, bool evict,
 	if (!ret)
 		ret = ttm_bo_move_accel_cleanup(bo, fence, evict, true, new_mem);
 
+	dma_fence_put(fence);
 	mwv207_job_put(mjob);
 	return ret;
 }
@@ -283,6 +280,7 @@ static int mwv207_move_gtt_vram(struct ttm_buffer_object *bo, bool evict,
 	if (!ret)
 		ret = ttm_bo_move_accel_cleanup(bo, fence, evict, true, new_mem);
 
+	dma_fence_put(fence);
 	mwv207_job_put(mjob);
 	return ret;
 }
@@ -310,6 +308,7 @@ static int mwv207_move_vram_vram(struct ttm_buffer_object *bo, bool evict,
 	if (!ret)
 		ret = ttm_bo_move_accel_cleanup(bo, fence, evict, true, new_mem);
 
+	dma_fence_put(fence);
 	mwv207_job_put(mjob);
 	return ret;
 }

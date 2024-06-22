@@ -71,6 +71,8 @@ static inline int mwv207_submit_select_engine(struct drm_device *dev, struct mwv
 
 static int mwv207_submit_init_job_reloc(struct mwv207_job *mjob, struct drm_mwv207_submit *args)
 {
+	int ret;
+
 	if ((int)args->nr_relocs < 0)
 		return -EINVAL;
 	mjob->nr_relocs = (int)args->nr_relocs;
@@ -78,6 +80,10 @@ static int mwv207_submit_init_job_reloc(struct mwv207_job *mjob, struct drm_mwv2
 		return 0;
 	if (args->relocs == 0)
 		return -EINVAL;
+
+	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, mjob->ctx);
+	if (ret)
+		return ret;
 
 	mjob->relocs = kvmalloc_array(mjob->nr_relocs,
 			sizeof(struct drm_mwv207_submit_reloc), GFP_KERNEL);
@@ -557,11 +563,7 @@ static int mwv207_submit_attach_dependency(struct mwv207_job *mjob, struct drm_m
 static int mwv207_submit_commit(struct mwv207_job *mjob,
 		struct drm_mwv207_submit *args, struct dma_fence **fence)
 {
-	int ret;
-
-	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, mjob->ctx);
-	if (ret)
-		return ret;
+	drm_sched_job_arm(&mjob->base);
 
 	if (args->flags & 0x00000002) {
 		struct sync_file *sync_file;
@@ -579,7 +581,7 @@ static int mwv207_submit_commit(struct mwv207_job *mjob,
 		args->fence_fd = fd;
 	}
 
-	*fence = &mjob->base.s_fence->finished;
+	*fence = dma_fence_get(&mjob->base.s_fence->finished);
 
 	mwv207_job_get(mjob);
 	drm_sched_entity_push_job(&mjob->base);
@@ -619,10 +621,12 @@ int mwv207_submit_ioctl(struct drm_device *dev, void *data,
 	if (ret)
 		goto unreserve;
 unreserve:
-	if (likely(fence))
+	if (likely(fence)) {
 		ttm_eu_fence_buffer_objects(&ticket, &mjob->tvblist, fence);
-	else
+		dma_fence_put(fence);
+	} else {
 		ttm_eu_backoff_reservation(&ticket, &mjob->tvblist);
+	}
 put_job:
 	mwv207_job_put(mjob);
 
