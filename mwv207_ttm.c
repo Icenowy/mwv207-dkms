@@ -203,7 +203,7 @@ static struct mwv207_job *mwv207_ttm_job_alloc(struct ttm_buffer_object *bo)
 	mtvb = &mjob->mtvb[0];
 	list_add_tail(&mtvb->base.head, &mjob->tvblist);
 
-	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, NULL);
+	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, 1, NULL);
 	if (ret)
 		goto err;
 

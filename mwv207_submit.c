@@ -81,7 +81,7 @@ static int mwv207_submit_init_job_reloc(struct mwv207_job *mjob, struct drm_mwv2
 	if (args->relocs == 0)
 		return -EINVAL;
 
-	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, mjob->ctx);
+	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, 1, mjob->ctx);
 	if (ret)
 		return ret;
 

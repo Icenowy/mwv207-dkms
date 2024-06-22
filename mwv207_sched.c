@@ -241,6 +241,9 @@ static struct drm_gpu_scheduler *mwv207_sched_create(struct mwv207_device *jdev,
 	sched->pipe = pipe;
 
 	ret = drm_sched_init(&sched->base, &mwv207_sched_ops,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
+			NULL,
+#endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
 			DRM_SCHED_PRIORITY_COUNT,
 #endif
@@ -278,8 +281,13 @@ int mwv207_sched_suspend(struct mwv207_device *jdev)
 			continue;
 		sched = to_mwv207_sched(jdev->sched[i]);
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+		if (atomic_read(&jdev->sched[i]->credit_count))
+			return -EBUSY;
+#else
 		if (atomic_read(&jdev->sched[i]->hw_rq_count))
 			return -EBUSY;
+#endif
 
 		ret = mwv207_devfreq_suspend(sched->pipe);
 		if (ret)
