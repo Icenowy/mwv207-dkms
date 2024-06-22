@@ -20,6 +20,10 @@
 #include "mwv207.h"
 #include "mwv207_irq.h"
 
+#ifndef PCI_IRQ_INTX
+#define PCI_IRQ_INTX PCI_IRQ_LEGACY
+#endif
+
 static irqreturn_t mwv207_isr(int irq_unused, void *dev_id)
 {
 	struct mwv207_device *jdev = dev_id;
@@ -143,7 +147,7 @@ int mwv207_irq_init(struct mwv207_device *jdev)
 	for (i = 0; i < 64; ++i)
 		irq_create_mapping(jdev->irq_domain, i);
 
-	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSI | PCI_IRQ_LEGACY);
+	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSI | PCI_IRQ_INTX);
 	if (ret < 1) {
 		ret = -ENODEV;
 		goto free_mapping;
