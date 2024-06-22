@@ -54,9 +54,11 @@ static void mwv207_evict_flags(struct ttm_buffer_object *bo,
 
 	if (!mwv207_ttm_bo_is_mwv207_bo(bo)) {
 		placement->placement = &placements;
-		placement->busy_placement = &placements;
 		placement->num_placement = 1;
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 9, 0))
+		placement->busy_placement = &placements;
 		placement->num_busy_placement = 1;
+#endif
 		return;
 	}
 
@@ -75,9 +77,12 @@ static void mwv207_evict_flags(struct ttm_buffer_object *bo,
 			jbo->placements[0].fpfn = jdev->visible_vram_size >> PAGE_SHIFT;
 			jbo->placements[0].lpfn = 0;
 			jbo->placement.placement = &jbo->placements[0];
-			jbo->placement.busy_placement = &jbo->placements[1];
 			jbo->placement.num_placement = 1;
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 9, 0))
+			jbo->placement.busy_placement = &jbo->placements[0];
 			jbo->placement.num_busy_placement = 1;
+#endif
+			jbo->placements[0].flags |= TTM_PL_FLAG_DESIRED;
 		} else
 			mwv207_bo_placement_from_domain(jbo, 0x4, false);
 	} else

@@ -44,8 +44,9 @@ void mwv207_bo_placement_from_domain(struct mwv207_bo *jbo, u32 domain, bool pin
 	u32 c = 0;
 
 	jbo->placement.placement = jbo->placements;
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 9, 0))
 	jbo->placement.busy_placement = jbo->placements;
-
+#endif
 	if (domain & 0x2) {
 		jbo->placements[c].fpfn = 0;
 
@@ -97,7 +98,9 @@ void mwv207_bo_placement_from_domain(struct mwv207_bo *jbo, u32 domain, bool pin
 
 	BUG_ON(c > 3);
 	jbo->placement.num_placement = c;
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 9, 0))
 	jbo->placement.num_busy_placement = c;
+#endif
 }
 
 int mwv207_bo_create(struct mwv207_device *jdev,
