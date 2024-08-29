@@ -27,6 +27,7 @@
 
 #undef MWV207_DEBUG_BO_MIGRATION
 
+#define gem_to_mwv207_bo(gobj) container_of((gobj), struct mwv207_bo, tbo.base)
 #define to_jbo(bo) container_of(bo, struct mwv207_bo, tbo)
 struct mwv207_bo {
 	struct ttm_buffer_object tbo;
