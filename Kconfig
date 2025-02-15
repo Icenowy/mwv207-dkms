@@ -9,6 +9,7 @@ config DRM_MWV207
 	select DRM_GEM_SHMEM_HELPER
 	select DRM_DEVFREQ
 	select DRM_TTM_HELPER
+	select DRM_CLIENT_SELECTION
 	help
 	  Choose this option if you have a Jingjia graphics card. 
           If M is selected, the module will be called mwv207 (JM9100).

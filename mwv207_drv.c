@@ -21,12 +21,19 @@
 #include <linux/fb.h>
 #include <linux/delay.h>
 #include <drm/drm_fb_helper.h>
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0))
+#include <drm/drm_client_setup.h>
+#endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 11, 0))
 #include <drm/drm_fbdev_ttm.h>
 #else
 #include <drm/drm_fbdev_generic.h>
 #endif
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0))
+#include <linux/aperture.h>
+#else
 #include <drm/drm_aperture.h>
+#endif
 #include <drm/drm_gem_ttm_helper.h>
 #include <drm/drm_device.h>
 #include <drm/drm_drv.h>
@@ -118,6 +125,9 @@ static struct drm_driver mwv207_drm_driver = {
 	.date			= DRIVER_DATE,
 	.major			= DRIVER_MAJOR,
 	.minor			= DRIVER_MINOR,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0))
+	DRM_FBDEV_TTM_DRIVER_OPS,
+#endif
 };
 
 static inline void iatu_write(struct mwv207_device *jdev, int index, u32 offset, u32 value)
@@ -239,7 +249,11 @@ static int mwv207_remove_conflicting_framebuffers(struct pci_dev *pdev)
 	primary = pdev->resource[PCI_ROM_RESOURCE].flags & IORESOURCE_ROM_SHADOW;
 #endif
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0))
+	return aperture_remove_conflicting_devices(base, size, DRIVER_NAME);
+#else
 	return drm_aperture_remove_conflicting_framebuffers(base, size, &mwv207_drm_driver);
+#endif
 }
 
 static u64 mwv207_vram_size(struct mwv207_device *jdev)
@@ -371,7 +385,9 @@ static int mwv207_pci_probe(struct pci_dev *pdev,
 	if (ret)
 		goto err_drm;
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 11, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0))
+	drm_client_setup(&jdev->base, NULL);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 11, 0))
 	drm_fbdev_ttm_setup(&jdev->base, 32);
 #else
 	drm_fbdev_generic_setup(&jdev->base, 32);

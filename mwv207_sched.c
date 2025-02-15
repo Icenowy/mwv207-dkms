@@ -205,7 +205,9 @@ static enum drm_gpu_sched_stat mwv207_sched_timedout_job(struct drm_sched_job *j
 
 	drm_sched_resubmit_jobs(&sched->base);
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0))
+	drm_sched_start(&sched->base, 0);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0))
 	drm_sched_start(&sched->base);
 #else
 	drm_sched_start(&sched->base, true);
