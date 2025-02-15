@@ -29,7 +29,6 @@
 #include <drm/drm_modeset_helper.h>
 #include <drm/drm_prime.h>
 #include <drm/drm_gem.h>
-#include <drm/drm_fbdev_generic.h>
 
 #include "mwv207.h"
 #include "mwv207_bo.h"
