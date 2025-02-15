@@ -113,7 +113,9 @@ static const struct drm_mode_config_funcs mwv207_mode_config_funcs = {
 	.fb_create     = mwv207_framebuffer_create,
 	.atomic_check  = drm_atomic_helper_check,
 	.atomic_commit = drm_atomic_helper_commit,
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 12, 0))
 	.output_poll_changed = drm_fb_helper_output_poll_changed,
+#endif
 };
 
 static void mwv207_modeset_init(struct drm_device *dev)

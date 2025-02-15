@@ -21,7 +21,11 @@
 #include <linux/fb.h>
 #include <linux/delay.h>
 #include <drm/drm_fb_helper.h>
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 11, 0))
+#include <drm/drm_fbdev_ttm.h>
+#else
 #include <drm/drm_fbdev_generic.h>
+#endif
 #include <drm/drm_aperture.h>
 #include <drm/drm_gem_ttm_helper.h>
 #include <drm/drm_device.h>
@@ -367,7 +371,11 @@ static int mwv207_pci_probe(struct pci_dev *pdev,
 	if (ret)
 		goto err_drm;
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 11, 0))
+	drm_fbdev_ttm_setup(&jdev->base, 32);
+#else
 	drm_fbdev_generic_setup(&jdev->base, 32);
+#endif
 
 	return 0;
 
