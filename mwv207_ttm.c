@@ -81,8 +81,9 @@ static void mwv207_evict_flags(struct ttm_buffer_object *bo,
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 9, 0))
 			jbo->placement.busy_placement = &jbo->placements[0];
 			jbo->placement.num_busy_placement = 1;
-#endif
+#else
 			jbo->placements[0].flags |= TTM_PL_FLAG_DESIRED;
+#endif
 		} else
 			mwv207_bo_placement_from_domain(jbo, 0x4, false);
 	} else
@@ -208,7 +209,11 @@ static struct mwv207_job *mwv207_ttm_job_alloc(struct ttm_buffer_object *bo)
 	mtvb = &mjob->mtvb[0];
 	list_add_tail(&mtvb->base.head, &mjob->tvblist);
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
 	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, 1, NULL);
+#else
+	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, NULL);
+#endif
 	if (ret)
 		goto err;
 
