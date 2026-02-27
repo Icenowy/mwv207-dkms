@@ -534,6 +534,9 @@ static void mwv207_hdmi_av_composer(struct mwv207_hdmi *hdmi, const struct drm_d
 	}
 
 	if (mwv207_hdmi_support_scdc(hdmi, display)) {
+		if (!hdmi->base.connector.ddc && hdmi->base.ddc)
+			hdmi->base.connector.ddc = hdmi->base.ddc;
+
 		if (tmdsclock > 340000000 ||
 		    hdmi_info->scdc.scrambling.low_rates) {
 			drm_scdc_readb(hdmi->base.ddc, SCDC_SINK_VERSION, &bytes);
