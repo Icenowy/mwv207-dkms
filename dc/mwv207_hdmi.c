@@ -543,14 +543,16 @@ static void mwv207_hdmi_av_composer(struct mwv207_hdmi *hdmi, const struct drm_d
 			drm_scdc_writeb(hdmi->base.ddc, SCDC_SOURCE_VERSION,
 				min_t(u8, bytes, 0x1));
 
-			drm_scdc_set_scrambling(&hdmi->base.connector, 1);
+			drm_scdc_set_high_tmds_clock_ratio(&hdmi->base.connector, true);
+			drm_scdc_set_scrambling(&hdmi->base.connector, true);
 
 			mwv207_hdmi_writeb(hdmi, (u8)~0x02, 0x4002);
 			mwv207_hdmi_writeb(hdmi, 1, 0x10E1);
 		} else {
 			mwv207_hdmi_writeb(hdmi, 0, 0x10E1);
 			mwv207_hdmi_writeb(hdmi, (u8)~0x02, 0x4002);
-			drm_scdc_set_scrambling(&hdmi->base.connector, 0);
+			drm_scdc_set_scrambling(&hdmi->base.connector, false);
+			drm_scdc_set_high_tmds_clock_ratio(&hdmi->base.connector, false);
 		}
 	}
 
