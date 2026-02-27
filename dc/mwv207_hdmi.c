@@ -907,10 +907,6 @@ static int mwv207_hdmi_get_modes(struct drm_connector *connector)
 static enum drm_mode_status mwv207_hdmi_mode_valid(struct mwv207_hdmi *hdmi,
 		const struct drm_display_mode *mode)
 {
-
-	if (mode->clock >= 384000)
-		return MODE_CLOCK_HIGH;
-
 	if (mode->clock > 594000)
 		return MODE_CLOCK_HIGH;
 
