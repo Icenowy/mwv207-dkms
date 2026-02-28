@@ -21,7 +21,9 @@
 #include <linux/fb.h>
 #include <linux/delay.h>
 #include <drm/drm_fb_helper.h>
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0))
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 14, 0))
++#include <drm/clients/drm_client_setup.h>
++#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0))
 #include <drm/drm_client_setup.h>
 #endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 11, 0))
@@ -122,7 +124,9 @@ static struct drm_driver mwv207_drm_driver = {
 
 	.name			= DRIVER_NAME,
 	.desc			= DRIVER_DESC,
+#if (LINUX_VERSION_CODE <= KERNEL_VERSION(6, 13, 0))
 	.date			= DRIVER_DATE,
+#endif
 	.major			= DRIVER_MAJOR,
 	.minor			= DRIVER_MINOR,
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0))
