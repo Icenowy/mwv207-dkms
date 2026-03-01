@@ -213,7 +213,11 @@ static enum drm_gpu_sched_stat mwv207_sched_timedout_job(struct drm_sched_job *j
 	drm_sched_start(&sched->base, true);
 #endif
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0))
+	return DRM_GPU_SCHED_STAT_RESET;
+#else
 	return DRM_GPU_SCHED_STAT_NOMINAL;
+#endif
 }
 
 static void mwv207_sched_free_job(struct drm_sched_job *job)
@@ -236,6 +240,9 @@ static struct drm_gpu_scheduler *mwv207_sched_create(struct mwv207_device *jdev,
 {
 	struct mwv207_sched *sched;
 	int ret;
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+	struct drm_sched_init_args args;
+#endif
 
 	if (pipe == NULL)
 		return NULL;
@@ -246,6 +253,18 @@ static struct drm_gpu_scheduler *mwv207_sched_create(struct mwv207_device *jdev,
 
 	sched->pipe = pipe;
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+	args.ops = &mwv207_sched_ops;
+	args.num_rqs = DRM_SCHED_PRIORITY_COUNT;
+	args.submit_wq = NULL;
+	args.timeout_wq = NULL;
+	args.dev = jdev->dev;
+	args.timeout = msecs_to_jiffies(timeout);
+	args.name = pipe->fname;
+	args.score = NULL;
+	args.credit_limit = hw_submission;
+	args.hang_limit = hang_limit;
+#else
 	ret = drm_sched_init(&sched->base, &mwv207_sched_ops,
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
 			NULL,
@@ -257,6 +276,7 @@ static struct drm_gpu_scheduler *mwv207_sched_create(struct mwv207_device *jdev,
 			msecs_to_jiffies(timeout),
 			NULL, NULL,
 			pipe->fname, jdev->dev);
+#endif
 	if (ret)
 		goto err;
 

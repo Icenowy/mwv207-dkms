@@ -69,7 +69,7 @@ static inline int mwv207_submit_select_engine(struct drm_device *dev, struct mwv
 	return 0;
 }
 
-static int mwv207_submit_init_job_reloc(struct mwv207_job *mjob, struct drm_mwv207_submit *args)
+static int mwv207_submit_init_job_reloc(struct mwv207_job *mjob, struct drm_mwv207_submit *args, struct drm_file *filp)
 {
 	int ret;
 
@@ -81,7 +81,9 @@ static int mwv207_submit_init_job_reloc(struct mwv207_job *mjob, struct drm_mwv2
 	if (args->relocs == 0)
 		return -EINVAL;
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0))
+	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, 1, mjob->ctx, filp->client_id);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
 	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, 1, mjob->ctx);
 #else
 	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, mjob->ctx);
@@ -290,7 +292,7 @@ static int mwv207_submit_init_job(struct drm_device *dev, struct mwv207_job *mjo
 	ret = mwv207_submit_init_job_bo(mjob, args, filp);
 	if (ret)
 		return ret;
-	ret = mwv207_submit_init_job_reloc(mjob, args);
+	ret = mwv207_submit_init_job_reloc(mjob, args, filp);
 	if (ret)
 		return ret;
 	ret = mwv207_submit_init_job_cmd(mjob, args);

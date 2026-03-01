@@ -34,12 +34,19 @@ static const struct drm_framebuffer_funcs fb_funcs = {
 };
 
 int mwv207_framebuffer_init(struct mwv207_device *jdev, struct drm_framebuffer *fb,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0))
+		const struct drm_format_info *info,
+#endif
 		const struct drm_mode_fb_cmd2 *mode_cmd, struct drm_gem_object *gobj)
 {
 	int ret;
 
 	fb->obj[0] = gobj;
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0))
+	drm_helper_mode_fill_fb_struct(&jdev->base, fb, info, mode_cmd);
+#else
 	drm_helper_mode_fill_fb_struct(&jdev->base, fb, mode_cmd);
+#endif
 
 	ret = drm_framebuffer_init(&jdev->base, fb, &fb_funcs);
 	return ret;
@@ -48,6 +55,9 @@ int mwv207_framebuffer_init(struct mwv207_device *jdev, struct drm_framebuffer *
 static struct drm_framebuffer *mwv207_framebuffer_create(
 		struct drm_device *dev,
 		struct drm_file *filp,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0))
+		const struct drm_format_info *info,
+#endif
 		const struct drm_mode_fb_cmd2 *mode_cmd)
 {
 	struct drm_gem_object *gobj = drm_gem_object_lookup(filp, mode_cmd->handles[0]);
@@ -66,7 +76,11 @@ static struct drm_framebuffer *mwv207_framebuffer_create(
 		goto err_unref;
 	}
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0))
+	err = mwv207_framebuffer_init(dev->dev_private, fb, info, mode_cmd, gobj);
+#else
 	err = mwv207_framebuffer_init(dev->dev_private, fb, mode_cmd, gobj);
+#endif
 	if (err)
 		goto err_free;
 

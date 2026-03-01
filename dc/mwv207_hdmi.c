@@ -916,7 +916,12 @@ static enum drm_mode_status mwv207_hdmi_mode_valid(struct mwv207_hdmi *hdmi,
 }
 
 static enum drm_mode_status mwv207_hdmi_connector_mode_valid(struct drm_connector *connector,
-		struct drm_display_mode *mode)
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 15, 0))
+		struct drm_display_mode *mode
+#else
+		const struct drm_display_mode *mode
+#endif
+		)
 {
 	struct mwv207_hdmi *hdmi = connector_to_hdmi(connector);
 

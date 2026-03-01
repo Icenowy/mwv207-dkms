@@ -203,7 +203,11 @@ void mwv207_bo_unref(struct mwv207_bo *jbo)
 	if (jbo == NULL)
 		return;
 
-	ttm_bo_put(&jbo->tbo);
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 12, 0))
+	ttm_bo_put(&job->tbo);
+#else
+	drm_gem_object_put(&jbo->tbo.base);
+#endif
 	jbo = NULL;
 }
 
@@ -212,7 +216,11 @@ struct mwv207_bo *mwv207_bo_ref(struct mwv207_bo *jbo)
 	if (jbo == NULL)
 		return NULL;
 
-	ttm_bo_get(&jbo->tbo);
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 12, 0))
+	ttm_bo_get(&job->tbo);
+#else
+	drm_gem_object_get(&jbo->tbo.base);
+#endif
 	return jbo;
 }
 

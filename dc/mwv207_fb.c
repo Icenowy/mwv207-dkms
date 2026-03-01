@@ -49,6 +49,7 @@ static const struct fb_ops mwv207_fb_ops = {
 	__FB_DEFAULT_DEFERRED_OPS_DRAW(mwv207_fbdev),
 };
 
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 15, 0))
 static int mwv207_fb_create(struct drm_fb_helper *fb_helper,
 		struct drm_fb_helper_surface_size *sizes)
 {
@@ -128,9 +129,12 @@ free_bo:
 	mwv207_bo_unref(jbo);
 	return ret;
 }
+#endif
 
 static const struct drm_fb_helper_funcs mwv207_fb_helper_funcs = {
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 15, 0))
 	.fb_probe = mwv207_fb_create,
+#endif
 };
 
 static void mwv207_fbdev_client_unregister(struct drm_client_dev *client)

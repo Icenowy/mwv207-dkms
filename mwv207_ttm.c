@@ -209,7 +209,9 @@ static struct mwv207_job *mwv207_ttm_job_alloc(struct ttm_buffer_object *bo)
 	mtvb = &mjob->mtvb[0];
 	list_add_tail(&mtvb->base.head, &mjob->tvblist);
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0))
+	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, 1, NULL, 0);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
 	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, 1, NULL);
 #else
 	ret = drm_sched_job_init(&mjob->base, mjob->engine_entity, NULL);

@@ -20,6 +20,9 @@
 #include "mwv207.h"
 
 int mwv207_framebuffer_init(struct mwv207_device *jdev, struct drm_framebuffer *fb,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0))
+		const struct drm_format_info *info,
+#endif
 		const struct drm_mode_fb_cmd2 *mode_cmd, struct drm_gem_object *gobj);
 
 #ifdef	CONFIG_DRM_FBDEV_EMULATION
