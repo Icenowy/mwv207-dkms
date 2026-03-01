@@ -21,9 +21,9 @@
 #include <linux/fb.h>
 #include <linux/delay.h>
 #include <drm/drm_fb_helper.h>
-+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 14, 0))
-+#include <drm/clients/drm_client_setup.h>
-+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 14, 0))
+#include <drm/clients/drm_client_setup.h>
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0))
 #include <drm/drm_client_setup.h>
 #endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 11, 0))
