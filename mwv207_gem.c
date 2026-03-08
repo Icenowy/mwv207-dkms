@@ -17,6 +17,7 @@
 #include <drm/drm_gem_ttm_helper.h>
 #include <drm/drm_prime.h>
 #include <drm/drm_utils.h>
+#include <drm/ttm/ttm_bo.h>
 #include "mwv207_drm.h"
 #include "mwv207_gem.h"
 #include "mwv207_bo.h"
@@ -155,7 +156,11 @@ void mwv207_gem_free_object(struct drm_gem_object *gobj)
 		return;
 
 	jbo = mwv207_bo_from_gem(gobj);
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 12, 0))
 	mwv207_bo_unref(jbo);
+#else
+	ttm_bo_put(&jbo->tbo);
+#endif
 }
 
 int  mwv207_gem_create_ioctl(struct drm_device *dev, void *data,

@@ -385,9 +385,11 @@ static int mwv207_pci_probe(struct pci_dev *pdev,
 	ret = drm_dev_register(&jdev->base, 0);
 	if (ret)
 		goto err_kms;
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 13, 0))
 	ret = mwv207_fbdev_init(jdev);
 	if (ret)
 		goto err_drm;
+#endif
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0))
 	drm_client_setup(&jdev->base, NULL);
@@ -421,7 +423,9 @@ static void mwv207_pci_remove(struct pci_dev *pdev)
 {
 	struct mwv207_device *jdev = pci_get_drvdata(pdev);
 
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 13, 0))
 	mwv207_fbdev_fini(jdev);
+#endif
 	drm_dev_unregister(&jdev->base);
 	mwv207_kms_fini(jdev);
 	mwv207_kctx_fini(jdev);

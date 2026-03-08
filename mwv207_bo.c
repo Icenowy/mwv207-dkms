@@ -250,9 +250,6 @@ int mwv207_bo_unpin_reserved(struct mwv207_bo *jbo)
 	struct ttm_operation_ctx ctx = {false, false};
 	int ret;
 
-	if (!jbo->pin_count)
-		return 0;
-
 	ttm_bo_unpin(&jbo->tbo);
 	if (jbo->tbo.pin_count)
 		return 0;
