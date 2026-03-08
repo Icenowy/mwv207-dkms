@@ -486,8 +486,13 @@ int mwv207_ttm_init(struct mwv207_device *jdev)
 	ret = ttm_device_init(&jdev->bdev,
 			&mwv207_bo_driver, jdev->dev,
 			jdev->base.anon_inode->i_mapping,
-			jdev->base.vma_offset_manager, true,
-			true);
+			jdev->base.vma_offset_manager,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 19, 0))
+			TTM_ALLOCATION_POOL_USE_DMA_ALLOC | TTM_ALLOCATION_POOL_USE_DMA32
+#else
+			true, true
+#endif
+			);
 	if (ret) {
 		DRM_ERROR("failed to initialize buffer object driver(%d).\n", ret);
 		return ret;

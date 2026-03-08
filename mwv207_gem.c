@@ -159,8 +159,10 @@ void mwv207_gem_free_object(struct drm_gem_object *gobj)
 	jbo = mwv207_bo_from_gem(gobj);
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 12, 0))
 	mwv207_bo_unref(jbo);
-#else
+#elif (LINUX_VERSION_CODE < KERNEL_VERSION(6, 19, 0))
 	ttm_bo_put(&jbo->tbo);
+#else
+	ttm_bo_fini(&jbo->tbo);
 #endif
 }
 
