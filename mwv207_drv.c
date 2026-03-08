@@ -401,7 +401,9 @@ static int mwv207_pci_probe(struct pci_dev *pdev,
 
 	return 0;
 
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 13, 0))
 err_drm:
+#endif
 	drm_dev_unregister(&jdev->base);
 err_kms:
 	mwv207_kms_fini(jdev);
