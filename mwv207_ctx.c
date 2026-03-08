@@ -13,6 +13,9 @@
 * or disclosure without the written permission of JingJiaMicro
 * Electronics Corporation is strictly prohibited.
 */
+
+#include <linux/minmax.h>
+
 #include <drm/drm_file.h>
 #include <drm/drm_ioctl.h>
 #include <drm/gpu_scheduler.h>
@@ -20,7 +23,6 @@
 #include "mwv207_drm.h"
 #include "mwv207_ctx.h"
 
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
 struct mwv207_ctx *mwv207_ctx_lookup(struct drm_device *dev,
 		struct drm_file *filp, u32 handle)
 {
