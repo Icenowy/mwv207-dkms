@@ -264,6 +264,8 @@ static struct drm_gpu_scheduler *mwv207_sched_create(struct mwv207_device *jdev,
 	args.score = NULL;
 	args.credit_limit = hw_submission;
 	args.hang_limit = hang_limit;
+
+	ret = drm_sched_init(&sched->base, &args);
 #else
 	ret = drm_sched_init(&sched->base, &mwv207_sched_ops,
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
