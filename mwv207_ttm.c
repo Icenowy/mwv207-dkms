@@ -165,8 +165,6 @@ static void mwv207_ttm_tt_unpopulate(struct ttm_device *bdev, struct ttm_tt *ttm
 
 static int mwv207_ttm_job_submit(struct mwv207_job *mjob, struct dma_fence **fence)
 {
-	int ret;
-
 	*fence = dma_fence_get(&mjob->base.s_fence->finished);
 
 	mwv207_job_get(mjob);
