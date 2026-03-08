@@ -20,6 +20,7 @@
 #include <drm/drm_atomic_helper.h>
 #include <drm/drm_vblank.h>
 #include <drm/drm_plane.h>
+#include <drm/drm_print.h>
 #include <drm/drm_fourcc.h>
 #include <drm/drm_framebuffer.h>
 #include <drm/drm_gem_framebuffer_helper.h>
@@ -627,7 +628,7 @@ void mwv207_crtc_prepare_vblank(struct drm_crtc *crtc)
 	}
 }
 
-void mwv207_crtc_finish_vblank(struct drm_crtc *crtc)
+static void mwv207_crtc_finish_vblank(struct drm_crtc *crtc)
 {
 	struct mwv207_va *va = crtc_to_va(crtc);
 	int put_vblank = false;

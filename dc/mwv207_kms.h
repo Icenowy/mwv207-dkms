@@ -29,12 +29,12 @@ int mwv207_framebuffer_init(struct mwv207_device *jdev, struct drm_framebuffer *
 int mwv207_fbdev_init(struct mwv207_device *jdev);
 void mwv207_fbdev_fini(struct mwv207_device *jdev);
 #else
-int mwv207_fbdev_init(struct mwv207_device *jdev)
+static inline int mwv207_fbdev_init(struct mwv207_device *jdev)
 {
 	return 0;
 }
 
-void mwv207_fbdev_fini(struct mwv207_device *jdev)
+static inline void mwv207_fbdev_fini(struct mwv207_device *jdev)
 {
 }
 #endif

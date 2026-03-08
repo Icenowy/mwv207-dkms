@@ -16,6 +16,7 @@
 #include <linux/version.h>
 #include <drm/drm_gem_ttm_helper.h>
 #include <drm/drm_prime.h>
+#include <drm/drm_print.h>
 #include <drm/drm_utils.h>
 #include <drm/ttm/ttm_bo.h>
 #include "mwv207_drm.h"
@@ -52,7 +53,7 @@ static const struct vm_operations_struct mwv207_ttm_vm_ops = {
 	.access = ttm_bo_vm_access
 };
 
-int mwv207_gem_prime_pin(struct drm_gem_object *gem)
+static int mwv207_gem_prime_pin(struct drm_gem_object *gem)
 {
 	struct mwv207_bo *jbo = mwv207_bo_from_gem(gem);
 	int ret;
@@ -65,7 +66,7 @@ int mwv207_gem_prime_pin(struct drm_gem_object *gem)
 	return ret;
 }
 
-void mwv207_gem_prime_unpin(struct drm_gem_object *gem)
+static void mwv207_gem_prime_unpin(struct drm_gem_object *gem)
 {
 	struct mwv207_bo *jbo = mwv207_bo_from_gem(gem);
 	int ret;

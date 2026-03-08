@@ -15,6 +15,8 @@
 */
 #include "mwv207_vi.h"
 
+#include <drm/drm_print.h>
+
 #define MWV207_DAC_HPD_VS_CLC(_chan)       (0x64 + (_chan) * 0x14)
 #define MWV207_DAC_HPD_PULSE_H(_chan)      (0x68 + (_chan) * 0x14)
 #define MWV207_DAC_HPD_PULSE_L(_chan)      (0x6C + (_chan) * 0x14)

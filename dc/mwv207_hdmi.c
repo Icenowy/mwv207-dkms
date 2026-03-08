@@ -15,6 +15,7 @@
 */
 #include <drm/display/drm_scdc_helper.h>
 #include <drm/display/drm_hdmi_helper.h>
+#include <drm/drm_print.h>
 #include <linux/delay.h>
 #include "mwv207_vi.h"
 #include "mwv207_vbios.h"

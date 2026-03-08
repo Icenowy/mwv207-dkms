@@ -27,6 +27,7 @@
 #include "mwv207.h"
 #include "mwv207_bo.h"
 #include "mwv207_drm.h"
+#include "mwv207_ttm.h"
 #include "mwv207_sched.h"
 
 static int mwv207_mem_visible(struct mwv207_device *jdev, struct ttm_resource *mem)

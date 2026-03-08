@@ -211,27 +211,6 @@ static int mwv207_i2c_set_addr(struct mwv207_i2c *i2c, int channel)
 	return 0;
 }
 
-void mwv207_i2c_put_byte(struct i2c_adapter *i2c,
-				 u8 slave_addr,
-				 u8 addr,
-				 u8 val)
-{
-	uint8_t out_buf[2];
-	struct i2c_msg msg = {
-		.addr = slave_addr,
-		.flags = 0,
-		.len = 2,
-		.buf = out_buf,
-	};
-
-	out_buf[0] = addr;
-	out_buf[1] = val;
-
-	if (i2c_transfer(i2c, &msg, 1) != 1)
-		pr_warn("i2c 0x%02x 0x%02x write failed\n",
-			  addr, val);
-}
-
 void mwv207_i2c_destroy(struct i2c_adapter *adapter)
 {
 	i2c_del_adapter(adapter);

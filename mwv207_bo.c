@@ -16,6 +16,7 @@
 #include <linux/version.h>
 #include <linux/io-mapping.h>
 #include <drm/drm_file.h>
+#include <drm/drm_print.h>
 #include "mwv207_drm.h"
 #include "mwv207_gem.h"
 #include "mwv207_bo.h"

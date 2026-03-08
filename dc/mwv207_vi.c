@@ -15,6 +15,8 @@
 */
 #include "mwv207_vi.h"
 
+#include <drm/drm_print.h>
+
 int mwv207_output_late_register(struct drm_connector *connector)
 {
 	struct mwv207_output *output = connector_to_output(connector);

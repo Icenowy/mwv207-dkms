@@ -14,6 +14,7 @@
 * Electronics Corporation is strictly prohibited.
 */
 #include <linux/moduleparam.h>
+#include <drm/drm_print.h>
 #include <drm/gpu_scheduler.h>
 #include "mwv207.h"
 #include "mwv207_sched.h"
